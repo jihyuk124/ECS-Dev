@@ -41,7 +41,7 @@ public:
 
 		return *this;
 	}
-	inline typename void Invoke(TArgs&&... args)
+	inline typename void Invoke(TArgs... args)
 	{
 		std::lock_guard<std::mutex> lock(this->mMutex);
 
@@ -70,7 +70,7 @@ public:
 		return Remove(function);
 	}
 
-	inline typename void operator ()(TArgs&&... args)
+	inline typename void operator ()(TArgs... args)
 	{
 		Invoke(args...);
 	}

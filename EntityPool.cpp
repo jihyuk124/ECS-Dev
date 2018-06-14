@@ -22,24 +22,40 @@ Entity * EntityPool::CreateEntity()
 	}
 	else
 	{
-		newEntity = new Entity(++counter);
+		newEntity = new Entity(&componentPools);
 		entities.insert(newEntity);
 	}
+	newEntity->entityID = ++counter;
 	return newEntity;
 }
 
 void EntityPool::Destroy()
 {
+	//Entity 삭제
 	for (const auto &entity : entities)
 	{
+		entity->Destroy();
 		delete entity;
 	}
 	entities.clear();
 
 	while (false == reusableEntities.empty())
 	{
+		reusableEntities.top()->Destroy();
 		delete reusableEntities.top();
 		reusableEntities.pop();
+	}
+
+	//Component 삭제
+	for (auto &pair : componentPools)
+	{
+		auto componentPool = pair.second;
+
+		while (!componentPool.empty())
+		{
+			delete componentPool.top();
+			componentPool.pop();
+		}
 	}
 }
 
