@@ -18,29 +18,34 @@ public:
 	Entity(std::map<ComponentID, std::stack<IComponent*>>* componentPools);
 	~Entity();
 
-	bool IsActive() const;
-
 	template <typename T, typename... TArgs> inline Entity* Add(TArgs&&... args);
 	template <typename T> inline Entity* Remove();
 	template <typename T, typename... TArgs> inline Entity* Replace(TArgs&&... args);
 	template <typename T> inline Entity* Refresh();
 	template<typename TComponent>inline TComponent* Get() const;
+	template <typename T> inline T* Use();
 	template <typename T> inline bool Has() const;
 
-
+	bool IsActive() const;
+	//bool HasComponents(const std::vector<ComponentID>& indices) const;
+	//bool HasAnyComponent(const std::vector<ComponentID>& indices) const;
+	//unsigned int GetComponentsCount() const;
 	void RemoveAllComponents();
 
+	bool operator ==(const Entity*& right) const;
+
 private:
+	template <typename T, typename... TArgs> inline IComponent* CreateComponent(TArgs&&... args);
+
 	Entity* AddComponent(ComponentID index, IComponent* component);
 	Entity* RemoveComponent(ComponentID index);
 	Entity* ReplaceComponent(const ComponentID index, IComponent* component);
-	bool HasComponent(const ComponentID index) const;
 	IComponent* GetComponent(const ComponentID index) const;
+	bool HasComponent(const ComponentID index) const;
 	void Destroy();
 
 	std::stack<IComponent*>* GetComponentPool(const ComponentID index) const;
 	void Replace(const ComponentID index, IComponent* replacement);
-	template <typename T, typename... TArgs> inline IComponent* CreateComponent(TArgs&&... args);
 
 //º¯¼ö
 public:
@@ -85,6 +90,13 @@ inline Entity * Entity::Refresh()
 template<typename T>
 inline T * Entity::Get() const
 {
+	return static_cast<T*>(GetComponent(ComponentTypeID::Get<T>()));
+}
+
+template<typename T>
+inline T * Entity::Use()
+{
+	Refresh<T>();
 	return static_cast<T*>(GetComponent(ComponentTypeID::Get<T>()));
 }
 

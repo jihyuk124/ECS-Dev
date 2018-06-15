@@ -35,6 +35,11 @@ void Entity::RemoveAllComponents()
 	}
 }
 
+bool Entity::operator==(const Entity*& right) const
+{
+	return this->entityID == right->entityID;
+}
+
 Entity* Entity::AddComponent(ComponentID index, IComponent* component)
 {
 	if (!active)
@@ -90,11 +95,6 @@ Entity * Entity::ReplaceComponent(const ComponentID index, IComponent * componen
 	return this;
 }
 
-
-bool Entity::HasComponent(const ComponentID index) const
-{
-	return (components.find(index) != components.end());
-}
 IComponent * Entity::GetComponent(const ComponentID index) const
 {
 	if (!HasComponent(index))
@@ -103,6 +103,12 @@ IComponent * Entity::GetComponent(const ComponentID index) const
 	}
 	return components.at(index);
 }
+
+bool Entity::HasComponent(const ComponentID index) const
+{
+	return (components.find(index) != components.end());
+}
+
 void Entity::Destroy()
 {
 	RemoveAllComponents();

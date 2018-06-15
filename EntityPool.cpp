@@ -25,7 +25,7 @@ Entity * EntityPool::CreateEntity()
 		newEntity = new Entity(&componentPools);
 		entities.insert(newEntity);
 	}
-	newEntity->entityID = ++counter;
+	newEntity->entityID = ++entityCounter;
 	return newEntity;
 }
 
@@ -59,7 +59,7 @@ void EntityPool::Destroy()
 	}
 }
 
-void EntityPool::Remove(Entity * entity)
+void EntityPool::RemoveEntity(Entity * entity)
 {
 	auto removed = entities.erase(entity);
 	if (!removed)
@@ -68,6 +68,10 @@ void EntityPool::Remove(Entity * entity)
 	}
 
 	reusableEntities.push(entity);
+}
+
+void EntityPool::RemoveAllEntity(Entity * entity)
+{
 }
 
 }
