@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <stack>
 #include <map>
 #include "ComponentTypeID.h"
@@ -27,9 +26,10 @@ public:
 	template <typename T> inline bool Has() const;
 
 	bool IsActive() const;
-	//bool HasComponents(const std::vector<ComponentID>& indices) const;
-	//bool HasAnyComponent(const std::vector<ComponentID>& indices) const;
-	//unsigned int GetComponentsCount() const;
+	const EntityID GetID() const;
+	bool HasComponents(const std::vector<ComponentID>& indices) const;
+	bool HasAnyComponent(const std::vector<ComponentID>& indices) const;
+	unsigned int GetComponentsCount() const;
 	void RemoveAllComponents();
 
 	bool operator ==(const Entity*& right) const;
@@ -60,7 +60,7 @@ public:
 
 private:
 	EntityID entityID{0};
-	bool active = true;
+	bool isActive = true;
 
 	std::map<ComponentID, IComponent*> components;
 	std::map<ComponentID, std::stack<IComponent*>>* componentPools;

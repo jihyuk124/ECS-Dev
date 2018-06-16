@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "Entity.h"
+#include "Group.h"
 
 namespace ECS
 {
@@ -19,47 +20,40 @@ public:
 	//Entity * CreateEntity(ComponentIDList indices);
 	void Destroy();
 	void RemoveEntity(Entity* entity);
-	void RemoveAllEntity(Entity* entity);
 
-	//auto GetEntities()->std::vector<Entity*>;
-	//auto GetEntities(const Matcher matcher)->std::vector<Entity*>;
-	//auto GetGroup(Matcher matcher)->Group*;
-
-	/*void ClearGroups();
-	void ResetCreationIndex();
-	void ClearComponentPool(const ComponentID index);
-	void ClearComponentPools();
-	void Reset();
+	bool HasEntity(Entity*& entity) const;
+	auto GetEntities()->std::vector<Entity*>;
+	auto GetEntities(const Matcher matcher)->std::vector<Entity*>;
+	auto GetGroup(Matcher matcher)->Group*;
 
 	auto GetEntityCount() const -> unsigned int;
 	auto GetReusableEntitiesCount() const -> unsigned int;
-	auto GetRetainedEntitiesCount() const -> unsigned int;*/
 
-	//using PoolChanged = Delegate<void(EntityPool* pool, Entity* entity)>;
-	//using GroupChanged = Delegate<void(EntityPool* pool, Group* group)>;
+	using PoolChanged = Delegate<void(EntityPool* pool, Entity* entity)>;
+	using GroupChanged = Delegate<void(EntityPool* pool, Group* group)>;
 
-	/*PoolChanged OnEntityCreated;
+	PoolChanged OnEntityCreated;
 	PoolChanged OnEntityWillBeDestroyed;
 	PoolChanged OnEntityDestroyed;
 	GroupChanged OnGroupCreated;
-	GroupChanged OnGroupCleared;*/
+	GroupChanged OnGroupCleared;
 
 private:
-	//void UpdateGroupsComponentAddedOrRemoved(Entity* entity, ComponentID index, IComponent* component);
-	//void UpdateGroupsComponentReplaced(Entity* entity, ComponentID index, IComponent* previousComponent, IComponent* newComponent);
-	//void OnEntityReleased(Entity* entity);
+	void UpdateGroupsComponentAddedOrRemoved(Entity* entity, ComponentID index, IComponent* component);
+	void UpdateGroupsComponentReplaced(Entity* entity, ComponentID index, IComponent* previousComponent, IComponent* newComponent);
+	void OnEntityReleased(Entity* entity);
 
 private:
 	unsigned int entityCounter;
 	std::unordered_set<Entity*> entities;
 	std::stack<Entity*> reusableEntities;
-	/*std::vector<EntityPtr> mEntitiesCache;
-	std::function<void(Entity*)> mOnEntityReleasedCache;*/
+	std::vector<Entity*> entitiesCache;
+	std::function<void(Entity*)> OnEntityReleasedCache;
 
 	std::map<ComponentID, std::stack<IComponent*>> componentPools;
-	//std::map<ComponentID, std::vector<Group*>> mGroupsForIndex;
 
-	//std::unordered_map<Matcher, Group*> Groups;
+	std::map<ComponentID, std::vector<Group*>> groupsForIndex;
+	std::unordered_map<Matcher, Group*> groups;
 
 	
 };

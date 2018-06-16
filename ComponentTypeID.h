@@ -4,8 +4,8 @@
 
 namespace ECS
 {
-	typedef unsigned int ComponentID;
-	typedef std::vector<ComponentID> ComponentIDList;
+	using ComponentID = unsigned int;
+	using ComponentIDList = std::vector<ComponentID>;
 
 	class ComponentTypeID
 	{

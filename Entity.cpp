@@ -13,7 +13,43 @@ Entity::~Entity()
 }
 bool Entity::IsActive() const
 {
-	return active;
+	return isActive;
+}
+
+const EntityID Entity::GetID() const
+{
+	return entityID;
+}
+
+bool Entity::HasComponents(const std::vector<ComponentID>& indices) const
+{
+	for (const ComponentID &index : indices)
+	{
+		if (!HasComponent(index))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Entity::HasAnyComponent(const std::vector<ComponentID>& indices) const
+{
+	for (const ComponentID &index : indices)
+	{
+		if (HasComponent(index))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+unsigned int Entity::GetComponentsCount() const
+{
+	return components.size();
 }
 
 
@@ -42,7 +78,7 @@ bool Entity::operator==(const Entity*& right) const
 
 Entity* Entity::AddComponent(ComponentID index, IComponent* component)
 {
-	if (!active)
+	if (!isActive)
 	{
 		throw std::runtime_error("Error, cannot add component to entity, entity has already been destroyed.");
 	}
@@ -61,7 +97,7 @@ Entity* Entity::AddComponent(ComponentID index, IComponent* component)
 
 Entity * Entity::RemoveComponent(ComponentID index)
 {
-	if (!active)
+	if (!isActive)
 	{
 		throw std::runtime_error("Error, cannot remove component to entity, entity has already been destroyed.");
 	}
@@ -78,7 +114,7 @@ Entity * Entity::RemoveComponent(ComponentID index)
 
 Entity * Entity::ReplaceComponent(const ComponentID index, IComponent * component)
 {
-	if (!active)
+	if (!isActive)
 	{
 		throw std::runtime_error("Error, cannot replace component to entity, entity has already been destroyed.");
 	}
@@ -115,7 +151,8 @@ void Entity::Destroy()
 	OnComponentAdded.Clear();
 	OnComponentReplaced.Clear();
 	OnComponentRemoved.Clear();
-	active = false;
+	isActive = false;
+	OnEntityReleased(this);
 }
 std::stack<IComponent *>* Entity::GetComponentPool(const ComponentID index) const
 {
